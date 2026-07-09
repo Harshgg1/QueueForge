@@ -13,7 +13,13 @@ export const createJobService = async({title, jobType, payload, ownerId}: {title
 }
     });
 
-    await jobQueue.add("process-job", { jobId: result.id });
+    await jobQueue.add("process-job",
+         { jobId: result.id}, {
+            attempts: 3,
+            backoff: { type: "exponential", delay: 2000 },
+            removeOnComplete: 100,
+            removeOnFail: 100,
+        });
 
     const updatedJob = await prisma.job.update({
         where: { id: result.id },
@@ -22,7 +28,6 @@ export const createJobService = async({title, jobType, payload, ownerId}: {title
     return updatedJob;
 }
 export const getJobByIdService = async(id: string) => {
-    console.log("service called");
-    // Implementation for retrieving a job by ID
-    return { success: true, message: "Job retrieved successfully" };
+    const job = await prisma.job.findUnique({ where: { id } });
+    return { success: true, message: "Job retrieved successfully", data: job };
 }

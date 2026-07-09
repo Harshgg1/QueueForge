@@ -3,7 +3,7 @@ import { createJobService, getJobByIdService } from "../services/job.services";
 
 export const createJob = async(req: Request, res: Response) => {
   const {title, type, payload } = req.body;
-  const ownerId = "temp-user-id";
+  const ownerId = req.user!.userId;
   const result = await createJobService({title, jobType: type, payload, ownerId});
   res.status(201).json(result);
 };

@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { createJob, getJobById } from "../controllers/job.controller";
-
+import { authMiddleware } from "../middlewares/auth.middleware";
 const jobRouter = Router();
 
-jobRouter.post("/jobs", createJob);
+jobRouter.post("/",authMiddleware, createJob);
 
-jobRouter.get("/jobs/:id", getJobById);
+jobRouter.get("/:id", getJobById);
 
 export default jobRouter;

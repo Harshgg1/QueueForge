@@ -26,7 +26,7 @@ export async function processJob(job: Job) {
 
     try{switch (jobRecord.type) {
         case "IMAGE":
-            result = await processImage(job, jobRecord);
+            result = await processImage(jobRecord, job);
             console.log("Image Processing Result:", result);
             break;
         default:
@@ -38,7 +38,10 @@ export async function processJob(job: Job) {
         data: {
             status: JobStatus.COMPLETED,
             completedAt: new Date(),
-            result,
+            result: {
+                compressedPath: result.compressedPath,
+                originalPath: (jobRecord.payload as any)?.imagePath
+            }
         }
     });}
     catch (error) {

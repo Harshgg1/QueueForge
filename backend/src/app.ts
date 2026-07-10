@@ -12,5 +12,6 @@ app.use("/", healthrouter);
 
 app.use("/api/auth", authRouter);
 app.use("/api/jobs", jobRouter);
+app.use("/uploads", express.static("uploads"));
 
 export default app;

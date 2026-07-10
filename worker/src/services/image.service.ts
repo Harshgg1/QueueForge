@@ -1,12 +1,21 @@
-import { Job } from "bullmq";
+import sharp from "sharp";
+import path from "path";
+import type { Job } from "bullmq";
 
-export async function processImage(job: Job, jobRecord: any) {
-    // console.log("Compressing Image...");
-    console.log(`Attempt: ${job.attemptsMade + 1}`);
-    throw new Error("Image processing failed");
-    await new Promise(resolve => setTimeout(resolve,3000));
+export async function processImage(jobRecord: any, job:Job) {
+    const inputPath = path.resolve("../backend", jobRecord.payload.imagePath);
+
+    const outputPath = path.join(
+        "uploads/compressed",
+        `${Date.now()}-compressed.jpg`
+    );
+
+    await sharp(inputPath)
+        .resize(800)
+        .jpeg({ quality: 70 })
+        .toFile(outputPath);
 
     return {
-        compressedUrl: "compressed-image.jpg"
+        compressedPath: outputPath,
     };
 }

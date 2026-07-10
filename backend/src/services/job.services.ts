@@ -31,3 +31,8 @@ export const getJobByIdService = async(id: string) => {
     const job = await prisma.job.findUnique({ where: { id } });
     return { success: true, message: "Job retrieved successfully", data: job };
 }
+
+export const getAllJobsService = async(ownerId: string) => {
+    const jobs = await prisma.job.findMany({ where: { ownerId }, orderBy: { createdAt: "desc" } });
+    return { success: true, message: "Jobs retrieved successfully", data: jobs };
+}

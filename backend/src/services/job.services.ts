@@ -27,8 +27,8 @@ export const createJobService = async({title, jobType, payload, ownerId}: {title
     });
     return updatedJob;
 }
-export const getJobByIdService = async(id: string) => {
-    const job = await prisma.job.findUnique({ where: { id } });
+export const getJobByIdService = async(jobId: string, ownerId: string) => {
+    const job = await prisma.job.findUnique({ where: { id: jobId, ownerId } });
     return { success: true, message: "Job retrieved successfully", data: job };
 }
 

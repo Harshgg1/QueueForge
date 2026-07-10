@@ -2,6 +2,7 @@ import { Job } from "bullmq";
 import prisma from "../lib/prisma";
 import { JobStatus } from "@prisma/client";
 import { processImage } from "../services/image.service";
+import { getProcessor } from "./processor.factory";
 
 export async function processJob(job: Job) {
 //     console.log(job.opts);
@@ -22,16 +23,11 @@ export async function processJob(job: Job) {
     });
     console.log(`Processing ${jobRecord.type} Job...`);
 
-    let result: any;
+    const processor = getProcessor(jobRecord.type);
 
-    try{switch (jobRecord.type) {
-        case "IMAGE":
-            result = await processImage(jobRecord, job);
-            console.log("Image Processing Result:", result);
-            break;
-        default:
-            throw new Error("Unknown job type");
-    }
+    const result = await processor(jobRecord, job);
+
+    
 
     await prisma.job.update({
         where: { id: jobId },
@@ -44,8 +40,3 @@ export async function processJob(job: Job) {
             }
         }
     });}
-    catch (error) {
-        throw error;
-    }
-
-}

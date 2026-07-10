@@ -6,7 +6,7 @@ export async function processImage(jobRecord: any, job:Job) {
     const inputPath = path.resolve("../backend", jobRecord.payload.imagePath);
 
     const outputPath = path.join(
-        "uploads/compressed",
+        "../backend/uploads/compressed",
         `${Date.now()}-compressed.jpg`
     );
 

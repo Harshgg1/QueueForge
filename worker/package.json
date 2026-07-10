@@ -19,12 +19,14 @@
     "bullmq": "^5.79.3",
     "dotenv": "^17.4.2",
     "ioredis": "^5.10.1",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.22.0",
     "prisma": "^7.8.0",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "@types/pdf-parse": "^1.1.5",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3"

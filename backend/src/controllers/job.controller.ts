@@ -10,7 +10,7 @@ export const createJob = async(req: Request, res: Response) => {
 };
 
 export const getJobById = async(req: Request, res: Response) => {
-  const result = await getJobByIdService(req.params.id as string);
+  const result = await getJobByIdService(req.params.id as string, req.user!.userId);
   res.status(200).json(result);
 };
 
@@ -40,4 +40,17 @@ export const createImageJob = async(req: Request, res: Response) => {
 });
 
 res.status(201).json(result);
+};
+
+export const createPdfJob = async(req: Request, res: Response) => {
+    const result = await createJobService({
+        title: req.file!.originalname,
+        jobType: JobType.PDF,
+        payload: {
+            pdfPath: req.file!.path
+        },
+        ownerId: req.user!.userId
+    });
+
+    res.status(201).json(result);
 };

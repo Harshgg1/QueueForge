@@ -14,12 +14,20 @@ export const getJobById = async(req: Request, res: Response) => {
   res.status(200).json(result);
 };
 
-export const getAllJobs = async(req: Request, res: Response) => { 
-    
-  const ownerId = req.user!.userId;
-  const result = await getAllJobsService(ownerId);
-  res.status(200).json(result);
-}
+export const getAllJobs = async (req: Request, res: Response) => {
+
+    const { status, type, page = "1", limit = "10" } = req.query;
+
+    const jobs = await getAllJobsService(
+        req.user!.userId,
+        status as string | undefined,
+        type as string | undefined,
+        Number(page),
+        Number(limit)
+    );
+
+    res.status(200).json(jobs);
+};
 
 export const createImageJob = async(req: Request, res: Response) => {
     const result = await createJobService({

@@ -32,7 +32,45 @@ export const getJobByIdService = async(id: string) => {
     return { success: true, message: "Job retrieved successfully", data: job };
 }
 
-export const getAllJobsService = async(ownerId: string) => {
-    const jobs = await prisma.job.findMany({ where: { ownerId }, orderBy: { createdAt: "desc" } });
-    return { success: true, message: "Jobs retrieved successfully", data: jobs };
-}
+export const getAllJobsService = async (
+    ownerId: string,
+    status?: string,
+    type?: string,
+    page: number = 1,
+    limit: number = 10
+) => {
+    const skip = (page - 1) * limit;
+
+    const whereClause: any = {
+        ownerId
+    };
+
+    if (status) {
+        whereClause.status = status as JobStatus;
+    }
+
+    if (type) {
+        whereClause.type = type as JobType;
+    }
+    const totalJobs = await prisma.job.count({
+    where: whereClause
+    });
+    const jobs = await prisma.job.findMany({
+        where: whereClause,
+        orderBy: {
+            createdAt: "desc"
+        },
+        skip,
+        take: limit
+    });
+
+    return {
+        jobs,
+        pagination: {
+            page,
+            limit,
+            totalJobs,
+            totalPages: Math.ceil(totalJobs / limit)
+        }
+    };
+};

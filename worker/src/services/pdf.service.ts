@@ -3,8 +3,9 @@ import path from "path";
 import { PDFParse } from "pdf-parse";
 
 export async function processPdf(jobRecord: any) {
-    const inputPath = path.resolve(
-        "../backend",
+    const basePath = process.env.UPLOADS_BASE_PATH || path.resolve("../backend");
+    const inputPath = path.join(
+        basePath,
         jobRecord.payload.pdfPath
     );
 

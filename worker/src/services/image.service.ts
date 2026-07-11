@@ -4,11 +4,12 @@ import { stat } from "fs/promises";
 import type { Job } from "bullmq";
 
 export async function processImage(jobRecord: any, job:Job) {
-    const inputPath = path.resolve("../backend", jobRecord.payload.imagePath);
+    const basePath = process.env.UPLOADS_BASE_PATH || path.resolve("../backend");
+    const inputPath = path.join(basePath, jobRecord.payload.imagePath);
     
     const fileName = `${Date.now()}-compressed.jpg`;
     const relativeOutputPath = `uploads/compressed/${fileName}`;
-    const absoluteOutputPath = path.resolve("../backend", relativeOutputPath);
+    const absoluteOutputPath = path.join(basePath, relativeOutputPath);
 
     const originalSize = (await stat(inputPath)).size;
 

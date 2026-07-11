@@ -4,7 +4,7 @@ import prisma from "./prisma";
 import { getIO } from "../socket/socket";
 
 export function initQueueEvents() {
-    const connection = new Redis({ maxRetriesPerRequest: null });
+    const connection = new Redis(process.env.REDIS_URL!, { maxRetriesPerRequest: null });
     const queueEvents = new QueueEvents("job-queue", { connection });
 
     // Helper function to emit job updates efficiently

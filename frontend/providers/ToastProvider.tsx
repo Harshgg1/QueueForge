@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { CheckCircle2, AlertCircle, Info } from "lucide-react";
 
 type ToastType = "success" | "error" | "info";
 
@@ -24,27 +25,15 @@ export function useToast() {
 }
 
 const icons: Record<ToastType, React.ReactNode> = {
-  success: (
-    <svg className="w-4 h-4 text-success shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-    </svg>
-  ),
-  error: (
-    <svg className="w-4 h-4 text-destructive shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  ),
-  info: (
-    <svg className="w-4 h-4 text-info shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  ),
+  success: <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />,
+  error: <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />,
+  info: <Info className="w-4 h-4 text-blue-400 shrink-0" />,
 };
 
 const bgColors: Record<ToastType, string> = {
-  success: "border-success/20 bg-success/5",
-  error: "border-destructive/20 bg-destructive/5",
-  info: "border-info/20 bg-info/5",
+  success: "border-emerald-500/20 bg-emerald-500/10 text-emerald-100",
+  error: "border-red-500/20 bg-red-500/10 text-red-100",
+  info: "border-blue-500/20 bg-blue-500/10 text-blue-100",
 };
 
 export default function ToastProvider({ children }: { children: React.ReactNode }) {

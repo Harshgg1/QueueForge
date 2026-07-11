@@ -8,10 +8,10 @@
   --color-border: #27272a;
   --color-muted: #a1a1aa;
   --color-muted-foreground: #71717a;
-  --color-accent: #6366f1;
-  --color-accent-hover: #818cf8;
+  --color-accent: #3b82f6; /* Blue-500 */
+  --color-accent-hover: #2563eb; /* Blue-600 */
   --color-destructive: #ef4444;
-  --color-success: #22c55e;
+  --color-success: #10b981; /* Emerald-500 */
   --color-warning: #f59e0b;
   --color-info: #3b82f6;
   --font-sans: var(--font-geist-sans);
@@ -46,6 +46,15 @@ body {
 /* Smooth transitions for interactive elements */
 button, a, input {
   transition: all 0.15s ease;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+button:not(:disabled):active {
+  transform: scale(0.98);
 }
 
 /* Focus ring utility */

@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "JobFlow — Distributed Job Processing",
-  description: "A distributed job processing platform for images, PDFs, and more.",
+  title: "QueueForge — Distributed Job Processing",
+  description: "Upload and process files efficiently.",
 };
 
 export default function RootLayout({

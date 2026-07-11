@@ -15,6 +15,7 @@ export const createJobService = async({title, jobType, payload, ownerId}: {title
 
     await jobQueue.add("process-job",
          { jobId: result.id}, {
+            jobId: result.id,
             attempts: 3,
             backoff: { type: "exponential", delay: 2000 },
             removeOnComplete: 100,

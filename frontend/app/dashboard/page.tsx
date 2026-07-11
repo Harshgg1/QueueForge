@@ -8,6 +8,9 @@ import UploadPdf from "@/components/UploadPdf";
 import { useJobs } from "@/hooks/useJobs";
 import { useMe } from "@/hooks/useMe";
 import { useLogout } from "@/hooks/useLogout";
+import { socket } from "@/lib/socket";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Workflow, Loader2, Image as ImageIcon, FileText, FileSpreadsheet, ChevronRight, FolderOpen, LogOut } from "lucide-react";
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; dot: string }> = {
@@ -27,6 +30,7 @@ const typeConfig: Record<string, { label: string; icon: React.ReactNode }> = {
 export default function DashboardPage() {
   const router = useRouter();
   const logout = useLogout();
+  const queryClient = useQueryClient();
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -41,6 +45,48 @@ export default function DashboardPage() {
     isLoading: userLoading,
     isError: userError,
   } = useMe();
+  useEffect(() => {
+    if(user?.data?.id){
+        socket.connect();
+
+        const joinRoom = () => {
+            socket.emit("join", user.data.id);
+        };
+
+        socket.on("connect", joinRoom);
+        if (socket.connected) {
+            joinRoom();
+        }
+
+        socket.on("jobUpdated", (data) => {
+            queryClient.setQueryData(["jobs"], (oldData: any) => {
+                if (!oldData || !oldData.jobs) return oldData;
+                
+                return {
+                    ...oldData,
+                    jobs: oldData.jobs.map((job: any) => 
+                        job.id === data.jobId ? { ...job, status: data.status } : job
+                    )
+                };
+            });
+            // Also update specific job cache if it exists
+            queryClient.setQueryData(["jobs", data.jobId], (oldData: any) => {
+                if (!oldData || !oldData.data) return oldData;
+                return {
+                    ...oldData,
+                    data: { ...oldData.data, status: data.status }
+                };
+            });
+        });
+    }
+
+    return () => {
+        socket.off("connect");
+        socket.off("jobUpdated");
+        socket.disconnect();
+    };
+}, [user, queryClient]);
+
 
   const {
     data,
@@ -68,7 +114,7 @@ export default function DashboardPage() {
   if (userError) {
     return null;
   }
-
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

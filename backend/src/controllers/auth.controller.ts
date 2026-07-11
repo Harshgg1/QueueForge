@@ -21,11 +21,17 @@ export async function signup(req: Request, res: Response) {
       email,
       password,
     });
+    res.cookie("token", result.token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+});
 
     res.status(201).json({
       success: true,
       message: "User created successfully",
-      data: result,
+      data: result.user,
     });
   } catch (err: any) {
     res.status(400).json({
@@ -52,10 +58,20 @@ export async function login(req: Request, res: Response) {
       password,
     });
 
+    const token = (result as any).token;
+    if (token) {
+      res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "Login successful",
-      data: result,
+      data: result.user,
     });
   } catch (err: any) {
     res.status(401).json({
@@ -64,3 +80,11 @@ export async function login(req: Request, res: Response) {
     });
   }
 }
+
+export const logout = async (req: Request, res: Response) => {
+  res.clearCookie("token");
+
+  res.json({
+    message: "Logged out",
+  });
+};

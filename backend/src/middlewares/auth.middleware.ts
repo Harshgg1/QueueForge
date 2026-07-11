@@ -6,16 +6,7 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ): void {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({
-      error: "No token provided",
-    });
-    return;
-  }
-
-  const token = authHeader.split(" ")[1];
+  const token = req.cookies.token ;
 
   if (!token) {
     res.status(401).json({

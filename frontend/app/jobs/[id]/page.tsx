@@ -33,43 +33,47 @@ if (userLoading) return <p>Loading...</p>;
 
     return (
         <div>
-            <h2>{data.title}</h2>
+            <h2>{data.data.title}</h2>
 
-      <p>Status: {data.status}</p>
+      <p>Status: {data.data.status}</p>
 
-      <p>Type: {data.type}</p>
+      <p>Type: {data.data.type}</p>
 
       <p>
         Created At:{" "}
-        {new Date(data.createdAt).toLocaleString()}
+        {new Date(data.data.createdAt).toLocaleString()}
       </p>
 
-      {data.type === "IMAGE" ? (
+      {data.data.status === "COMPLETED" && data.data.result && (
         <>
-          <img
-            src={`${process.env.NEXT_PUBLIC_API_URL}/${data.result.compressedPath}`}
-            alt={data.title}
-            width={300}
-          />
+          {data.data.type === "IMAGE" ? (
+            <>
+              <img
+                src={`${process.env.NEXT_PUBLIC_API_URL}/${data.data.result.compressedPath}`}
+                alt={data.data.title}
+                width={300}
+              />
 
-          <br />
+              <br />
 
-          <a
-            href={`${process.env.NEXT_PUBLIC_API_URL}/${data.result.compressedPath}`}
-            target="_blank"
-          >
-            Download Image
-          </a>
-        </>
-      ) : (
-        <>
-          <p>Pages: {data.result.pages}</p>
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_URL}/${data.data.result.compressedPath}`}
+                target="_blank"
+              >
+                Download Image
+              </a>
+            </>
+          ) : (
+            <>
+              <p>Pages: {data.data.result.pages}</p>
 
-          <p>Characters: {data.result.textLength}</p>
+              <p>Characters: {data.data.result.textLength}</p>
 
-          <p>Preview:</p>
+              <p>Preview:</p>
 
-          <p>{data.result.preview}</p>
+              <p>{data.data.result.preview}</p>
+            </>
+          )}
         </>
       )}
     </div>

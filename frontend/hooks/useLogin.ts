@@ -10,7 +10,7 @@ interface LoginData {
 export function useLogin() {
     const mutation = useMutation({
         mutationFn: async (data: LoginData) => {
-            const response = await api.post("/login", data);
+            const response = await api.post("/auth/login", data);
             return response.data;
         }
     });

@@ -57,7 +57,7 @@ export default function DashboardPage() {
     <div>
       <h1>Dashboard</h1>
 
-      <p>Welcome {user.user.username}</p>
+      <p>Welcome {user.data.name}</p>
 
       <hr />
 

@@ -7,6 +7,7 @@ import { useSignup } from "@/hooks/useSignup";
 export default function SignupPage() {
     const router = useRouter();
 
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -16,7 +17,7 @@ export default function SignupPage() {
         e.preventDefault();
 
         signup.mutate(
-            { email, password },
+            { name, email, password },
             {  
                 onSuccess: () => {
                     router.push("/dashboard");
@@ -25,6 +26,13 @@ export default function SignupPage() {
         };
         return (
              <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
       <input
         type="email"
         placeholder="Email"

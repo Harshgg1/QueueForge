@@ -27,16 +27,12 @@ export async function processJob(job: Job) {
 
     const result = await processor(jobRecord, job);
 
-    
-
     await prisma.job.update({
         where: { id: jobId },
         data: {
             status: JobStatus.COMPLETED,
             completedAt: new Date(),
-            result: {
-                compressedPath: result.compressedPath,
-                originalPath: (jobRecord.payload as any)?.imagePath
-            }
+            result: result
         }
-    });}
+    });
+}

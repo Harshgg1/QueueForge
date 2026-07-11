@@ -4,18 +4,18 @@ import type { Job } from "bullmq";
 
 export async function processImage(jobRecord: any, job:Job) {
     const inputPath = path.resolve("../backend", jobRecord.payload.imagePath);
-
-    const outputPath = path.join(
-        "../backend/uploads/compressed",
-        `${Date.now()}-compressed.jpg`
-    );
+    
+    const fileName = `${Date.now()}-compressed.jpg`;
+    const relativeOutputPath = `uploads/compressed/${fileName}`;
+    const absoluteOutputPath = path.resolve("../backend", relativeOutputPath);
 
     await sharp(inputPath)
         .resize(800)
         .jpeg({ quality: 70 })
-        .toFile(outputPath);
+        .toFile(absoluteOutputPath);
 
     return {
-        compressedPath: outputPath,
+        compressedPath: relativeOutputPath,
+        originalPath: jobRecord.payload.imagePath
     };
 }

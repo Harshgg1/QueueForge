@@ -6,7 +6,7 @@ import api from "@/lib/axios";
 export function useLogout() {
   return useMutation({
     mutationFn: async () => {
-      const res = await api.post("/logout");
+      const res = await api.post("/auth/logout");
       return res.data;
     },
   });

@@ -1,8 +1,10 @@
 <div align="center">
 
-# QueueForge
+<h1>
+  <img src="./docs/logo.svg" alt="QueueForge Logo" width="42" align="center" /> QueueForge
+</h1>
 
-**A distributed job processing platform built with production-inspired architecture for asynchronous file processing at scale.**
+**A distributed job processing platform built with Next.js, Node.js, BullMQ, Redis, and PostgreSQL.**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js_20+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)

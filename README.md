@@ -163,7 +163,88 @@ This takes ~50ms. The worker handles the rest asynchronously.
 
 ## Architecture
 
-![System Architecture](docs/architecture.jpg)
+```mermaid
+flowchart TB
+    %% Client Subgraph
+    subgraph Client ["Client (Next.js + TypeScript)"]
+        direction TB
+        UI["Pages & Components"]
+        Hooks["React Query Hooks<br/>useJobs, useMe"]
+        Services["Services<br/>Axios API, Socket.IO Client"]
+
+        UI --> Hooks
+        Hooks --> Services
+    end
+
+    %% Server Subgraph
+    subgraph Server ["Backend (Node.js + Express)"]
+        direction TB
+        
+        subgraph REST ["REST API Layer"]
+            direction TB
+            AuthMid["Auth Middleware<br/>JWT Cookie Verification"]
+            Controllers["Controllers<br/>Auth, Jobs"]
+            Logic["Business Logic"]
+
+            AuthMid --> Controllers
+            Controllers --> Logic
+        end
+        
+        subgraph WS ["WebSocket Layer"]
+            direction TB
+            QueueEv["BullMQ QueueEvents<br/>Listen to completed/failed"]
+            SocketServer["Socket.IO Server<br/>Broadcast to User Rooms"]
+            
+            QueueEv --> SocketServer
+        end
+    end
+
+    %% Worker Subgraph
+    subgraph WorkerContainer ["Worker (Node.js + BullMQ)"]
+        direction TB
+        Factory["Processor Factory<br/>getProcessor(jobType)"]
+        Sharp["Image Processor<br/>Sharp (Compress/Resize)"]
+        PdfParse["PDF Processor<br/>pdf-parse (Extract Text)"]
+
+        Factory --> Sharp
+        Factory --> PdfParse
+    end
+
+    %% Data Subgraph
+    subgraph DBContainer ["Database"]
+        direction TB
+        PrismaORM["Prisma ORM<br/>@prisma/client"]
+        Postgres[("PostgreSQL 16")]
+        PrismaORM --> Postgres
+    end
+
+    %% Cache Subgraph
+    subgraph CacheContainer ["Cache & Queue"]
+        Redis[("Redis 7")]
+    end
+
+    %% Connections
+    Services -- "HTTP (Axios)" --> AuthMid
+    Services -- "WebSocket" --> SocketServer
+
+    Logic -- "Prisma" --> PrismaORM
+    Logic -- "Enqueue Job" --> Redis
+
+    Redis -- "Stream Events" --> QueueEv
+    Redis -- "Dequeue Job" --> Factory
+
+    Sharp -- "Update Job Result" --> PrismaORM
+    PdfParse -- "Update Job Result" --> PrismaORM
+
+    %% Styling
+    style Client fill:#1a1a2e,stroke:#e94560,color:#fff
+    style Server fill:#16213e,stroke:#0f3460,color:#fff
+    style REST fill:#1a1a2e,stroke:#e94560,color:#fff
+    style WS fill:#1a1a2e,stroke:#00b4d8,color:#fff
+    style WorkerContainer fill:#16213e,stroke:#0f3460,color:#fff
+    style DBContainer fill:#0f3460,stroke:#533483,color:#fff
+    style CacheContainer fill:#0f3460,stroke:#d29922,color:#fff
+```
 
 The system consists of five services:
 
@@ -604,7 +685,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-<div align="center">
+
 
 Built by [Harshgg1](https://github.com/Harshgg1)
 

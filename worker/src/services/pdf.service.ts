@@ -19,7 +19,7 @@ export async function processPdf(jobRecord: any) {
 
     return {
         pages: result.total,
-        preview: result.text.slice(0, 300),
+        preview: result.text.slice(0, 800),
         textLength: result.text.length
     };
 }

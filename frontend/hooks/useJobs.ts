@@ -14,7 +14,7 @@ export function useJob(id: string) {
             return res.data;
 
         },
-        enabled: !!id,
+        enabled: !!id, //This means: enabled: Boolean(id) If: id = "" then enabled = false  No API request is made.
     });
 }
 

@@ -37,7 +37,7 @@ worker.on("failed", async (job, err) => {
             },
         });
 
-        console.log(`💀 Job ${job!.id} permanently failed`);
+        console.log(`Job ${job!.id} permanently failed`);
     }
 });
-console.log("🚀 Worker started...");
+console.log("Worker started...");

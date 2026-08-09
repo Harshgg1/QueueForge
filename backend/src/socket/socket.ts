@@ -9,6 +9,8 @@ export function initSocket(server: http.Server) {
             origin: [
                 "http://localhost:4000",
                 "http://localhost:3000",
+                process.env.FRONTEND_URL || "",
+                "https://queue-forge-one.vercel.app"
                 ],
             credentials: true,
         },

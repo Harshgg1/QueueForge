@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN DATABASE_URL="postgresql://postgres:password@postgres:5432/mydatabase" npx prisma generate
+RUN DATABASE_URL="postgresql://dummy:dummy@postgres:5432/dummy" npx prisma generate
 
-CMD ["npm", "run", "dev"]
+CMD ["npm","run","start"]

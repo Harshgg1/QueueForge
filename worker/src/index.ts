@@ -1,10 +1,29 @@
 import dotenv from "dotenv";
 dotenv.config();
+
+import  express  from "express";
 import {Worker} from "bullmq";
 import redisClient from "./lib/redis";
 import { processJob } from "./processors/job.processor";
 import prisma from "./lib/prisma";
 import { JobStatus } from "@prisma/client/edge";
+
+
+// for deployment 
+const app = express();
+
+app.get("/", (req, res) => {
+    res.send("QueueForge Worker Running");
+});
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT,()=>{
+    console.log(`Worker running on ${PORT}`);
+});
+// end // 
+
+
 
 const worker = new Worker("job-queue", async (job) => {
   await processJob(job);

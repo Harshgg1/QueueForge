@@ -1,28 +1,50 @@
 import sharp from "sharp";
-import path from "path";
-import { stat } from "fs/promises";
 import type { Job } from "bullmq";
+import {
+    downloadFile,
+    uploadFile,
+    getPublicUrl
+} from "../lib/storage";
 
-export async function processImage(jobRecord: any, job:Job) {
-    const basePath = process.env.UPLOADS_BASE_PATH || path.resolve("../backend");
-    const inputPath = path.join(basePath, jobRecord.payload.imagePath);
-    
-    const fileName = `${Date.now()}-compressed.jpg`;
-    const relativeOutputPath = `uploads/compressed/${fileName}`;
-    const absoluteOutputPath = path.join(basePath, relativeOutputPath);
+export async function processImage(jobRecord: any, job: Job) {
 
-    const originalSize = (await stat(inputPath)).size;
+    const imagePath = jobRecord.payload.imagePath;
 
-    await sharp(inputPath)
+    // Download original image from Supabase
+    const inputBuffer = await downloadFile(imagePath);
+
+    const originalSize = inputBuffer.length;
+
+    // Compress image
+    const outputBuffer = await sharp(inputBuffer)
         .resize(800)
         .jpeg({ quality: 70 })
-        .toFile(absoluteOutputPath);
+        .toBuffer();
 
-    const compressedSize = (await stat(absoluteOutputPath)).size;
+    const compressedSize = outputBuffer.length;
+
+    // Store compressed image in Supabase
+    const fileName = `${Date.now()}-compressed.jpg`;
+
+    const compressedPath = `processed/images/${fileName}`;
+
+    await uploadFile(
+        compressedPath,
+        outputBuffer,
+        "image/jpeg"
+    );
+
+    // Generate browser-accessible URLs
+    const originalUrl = getPublicUrl(imagePath);
+    const compressedUrl = getPublicUrl(compressedPath);
 
     return {
-        compressedPath: relativeOutputPath,
-        originalPath: jobRecord.payload.imagePath,
+        compressedPath,
+        originalPath: imagePath,
+
+        originalUrl,
+        compressedUrl,
+
         originalSize,
         compressedSize
     };

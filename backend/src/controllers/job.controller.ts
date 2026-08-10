@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { createJobService, getAllJobsService, getJobByIdService } from "../services/job.services";
-import { JobType } from "@prisma/client/edge";
+import { JobType } from "@prisma/client";
+import { uploadFile } from "../lib/storage";
 
 export const createJob = async(req: Request, res: Response) => {
   const {title, type, payload } = req.body;
@@ -29,25 +30,92 @@ export const getAllJobs = async (req: Request, res: Response) => {
     res.status(200).json(jobs);
 };
 
-export const createImageJob = async(req: Request, res: Response) => {
-    const result = await createJobService({
-    title: req.file!.originalname,
-    jobType: JobType.IMAGE,
-    payload: {
-        imagePath: req.file!.path
-    },
-    ownerId: req.user!.userId
-});
+// export const createImageJob = async(req: Request, res: Response) => {
+//     const result = await createJobService({
+//     title: req.file!.originalname,
+//     jobType: JobType.IMAGE,
+//     payload: {
+//         imagePath: req.file!.path
+//     },
+//     ownerId: req.user!.userId
+// });
 
-res.status(201).json(result);
+// res.status(201).json(result);
+// };
+
+// export const createPdfJob = async(req: Request, res: Response) => {
+//     const result = await createJobService({
+//         title: req.file!.originalname,
+//         jobType: JobType.PDF,
+//         payload: {
+//             pdfPath: req.file!.path
+//         },
+//         ownerId: req.user!.userId
+//     });
+
+//     res.status(201).json(result);
+// };
+
+export const createImageJob = async (req: Request, res: Response) => {
+
+    if (!req.file) {
+        return res.status(400).json({
+            message: "No image uploaded"
+        });
+    }
+
+    const file = req.file;
+
+    // Path where the original file will live in Supabase
+    const filePath = `originals/images/${Date.now()}-${file.originalname}`;
+
+    // Upload image to Supabase Storage
+    await uploadFile(
+        filePath,
+        file.buffer,
+        file.mimetype
+    );
+
+    // Create BullMQ job + PostgreSQL record
+    const result = await createJobService({
+        title: file.originalname,
+        jobType: JobType.IMAGE,
+        payload: {
+            imagePath: filePath
+        },
+        ownerId: req.user!.userId
+    });
+
+    res.status(201).json(result);
 };
 
-export const createPdfJob = async(req: Request, res: Response) => {
+
+export const createPdfJob = async (req: Request, res: Response) => {
+
+    if (!req.file) {
+        return res.status(400).json({
+            message: "No PDF uploaded"
+        });
+    }
+
+    const file = req.file;
+
+    // Path where the original PDF will live in Supabase
+    const filePath = `originals/pdfs/${Date.now()}-${file.originalname}`;
+
+    // Upload PDF to Supabase Storage
+    await uploadFile(
+        filePath,
+        file.buffer,
+        file.mimetype
+    );
+
+    // Create BullMQ job + PostgreSQL record
     const result = await createJobService({
-        title: req.file!.originalname,
+        title: file.originalname,
         jobType: JobType.PDF,
         payload: {
-            pdfPath: req.file!.path
+            pdfPath: filePath
         },
         ownerId: req.user!.userId
     });

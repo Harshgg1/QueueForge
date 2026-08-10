@@ -170,7 +170,7 @@ export default function JobDetailsPage() {
                         <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold text-center">Original Image</p>
                         <div className="rounded-xl overflow-hidden border border-border bg-zinc-950 flex items-center justify-center p-2 h-[400px]">
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/${job.result.originalPath}`}
+                            src={job.result.originalUrl}
                             alt="Original"
                             className="max-h-full w-auto object-contain rounded"
                           />
@@ -180,7 +180,7 @@ export default function JobDetailsPage() {
                         <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold text-center text-emerald-400">Compressed Image</p>
                         <div className="rounded-xl overflow-hidden border border-emerald-500/20 bg-zinc-950 flex items-center justify-center p-2 h-[400px]">
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/${job.result.compressedPath}`}
+                            src={job.result.compressedUrl}
                             alt="Compressed"
                             className="max-h-full w-auto object-contain rounded"
                           />
@@ -190,7 +190,7 @@ export default function JobDetailsPage() {
 
                     <div className="flex justify-center">
                       <a
-                        href={`${process.env.NEXT_PUBLIC_API_URL}/${job.result.compressedPath}`}
+                        href={job.result.compressedUrl}
                         target="_blank"
                         className="inline-flex items-center gap-2 px-6 py-2.5 bg-foreground text-background hover:bg-zinc-200 hover:-translate-y-px hover:shadow-lg active:scale-95 rounded-lg text-sm font-medium transition-all"
                       >

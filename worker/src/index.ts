@@ -6,7 +6,7 @@ import {Worker} from "bullmq";
 import redisClient from "./lib/redis";
 import { processJob } from "./processors/job.processor";
 import prisma from "./lib/prisma";
-import { JobStatus } from "@prisma/client/edge";
+import { JobStatus } from "@prisma/client";
 
 
 // for deployment 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createJob, getAllJobs, getJobById } from "../controllers/job.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import { upload } from "../middlewares/upload.middleware";
+import  upload  from "../middlewares/upload.middleware";
 import { createImageJob } from "../controllers/job.controller";
 import { createPdfJob } from "../controllers/job.controller";
 

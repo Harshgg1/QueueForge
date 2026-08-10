@@ -11,13 +11,12 @@ export async function uploadFile(
   file: Buffer,
   contentType: string
 ) {
-  // Convert Node Buffer to a Blob. This avoids 'fetch failed' errors in 
-  // Node's native fetch (undici) when handling Multer's pooled buffers.
-  const blob = new Blob([file], { type: contentType });
+  // Create a clean copy to avoid Node's fetch (undici) choking on pooled Buffers
+  const data = new Uint8Array(file);
 
   const { error } = await supabase.storage
     .from(bucketName)
-    .upload(filePath, blob, {
+    .upload(filePath, data, {
       contentType,
       upsert: true,
     });

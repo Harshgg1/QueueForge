@@ -15,11 +15,12 @@ export async function uploadFile(
     fileBuffer: Buffer,
     contentType: string
 ) {
-    const blob = new Blob([fileBuffer], { type: contentType });
+    // Create a clean copy to avoid Node's fetch (undici) choking on pooled Buffers
+    const data = new Uint8Array(fileBuffer);
 
     const { error } = await supabase.storage
         .from(BUCKET_NAME)
-        .upload(filePath, blob, {
+        .upload(filePath, data, {
             contentType,
             upsert: true
         });

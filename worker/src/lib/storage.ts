@@ -15,7 +15,7 @@ export async function uploadFile(
     fileBuffer: Buffer,
     contentType: string
 ) {
-    // Create a clean copy to avoid Node's fetch (undici) choking on pooled Buffers
+    //Create a clean copy to avoid Node's fetch (undici) choking on pooled Buffers
     const data = new Uint8Array(fileBuffer);
 
     const { error } = await supabase.storage

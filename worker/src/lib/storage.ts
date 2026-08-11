@@ -8,6 +8,8 @@ const supabase = createClient(
     supabaseKey
 );
 
+const test: number = "this is wrong";
+
 const BUCKET_NAME = process.env.SUPABASE_BUCKET!;
 
 export async function uploadFile(

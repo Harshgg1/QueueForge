@@ -10,7 +10,8 @@ export function initSocket(server: http.Server) {
                 "http://localhost:4000",
                 "http://localhost:3000",
                 process.env.FRONTEND_URL || "",
-                "https://queue-forge-one.vercel.app"
+                "https://queue-forge-one.vercel.app",
+                "https://queueforge.harshgg.me"
                 ],
             credentials: true,
         },

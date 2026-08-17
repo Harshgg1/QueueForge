@@ -25,7 +25,8 @@ export async function signup(req: Request, res: Response) {
     httpOnly: true,
     sameSite: "none",
     secure: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
 });
 
     res.status(201).json({
@@ -65,6 +66,7 @@ export async function login(req: Request, res: Response) {
         sameSite: "none",
         secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/",
       });
     }
 
@@ -82,7 +84,12 @@ export async function login(req: Request, res: Response) {
 }
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    path: "/",
+  });
 
   res.json({
     message: "Logged out",

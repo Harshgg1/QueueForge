@@ -2,11 +2,24 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMe } from "@/hooks/useMe";
 import { Workflow, Image as ImageIcon, FileText, RotateCcw } from "lucide-react";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const { data: user } = useMe();
+
   useEffect(() => setMounted(true), []);
+
+  // If already logged in, redirect to dashboard
+  useEffect(() => {
+    if (user?.data) {
+      router.replace("/dashboard");
+    }
+  }, [user, router]);
+
 
   return (
     <div className="flex flex-col min-h-screen">

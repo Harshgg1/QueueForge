@@ -13,12 +13,7 @@ export default function Home() {
 
   useEffect(() => setMounted(true), []);
 
-  // If already logged in, redirect to dashboard
-  useEffect(() => {
-    if (user?.data) {
-      router.replace("/dashboard");
-    }
-  }, [user, router]);
+  // Auto-redirect removed per user request
 
 
   return (
@@ -33,18 +28,29 @@ export default function Home() {
             <span className="text-lg font-semibold tracking-tight">QueueForge</span>
           </div>
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm text-muted hover:text-foreground transition-colors"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              className="px-4 py-2 text-sm bg-foreground text-background hover:bg-zinc-200 rounded-lg font-medium transition-all"
-            >
-              Get Started
-            </Link>
+            {user?.data ? (
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 text-sm bg-foreground text-background hover:bg-zinc-200 rounded-lg font-medium transition-all"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm text-muted hover:text-foreground transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="px-4 py-2 text-sm bg-foreground text-background hover:bg-zinc-200 rounded-lg font-medium transition-all"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -74,18 +80,29 @@ export default function Home() {
           </p>
 
           <div className="flex items-center justify-center gap-4 pt-2">
-            <Link
-              href="/signup"
-              className="px-6 py-3 bg-foreground text-background hover:bg-zinc-200 hover:-translate-y-px hover:shadow-lg active:scale-95 rounded-lg font-medium transition-all"
-            >
-              Start Processing
-            </Link>
-            <Link
-              href="/login"
-              className="px-6 py-3 border border-border hover:bg-card hover:-translate-y-px hover:shadow-sm active:scale-95 text-foreground rounded-lg font-medium transition-all"
-            >
-              Sign In
-            </Link>
+            {user?.data ? (
+              <Link
+                href="/dashboard"
+                className="px-6 py-3 bg-foreground text-background hover:bg-zinc-200 hover:-translate-y-px hover:shadow-lg active:scale-95 rounded-lg font-medium transition-all"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/signup"
+                  className="px-6 py-3 bg-foreground text-background hover:bg-zinc-200 hover:-translate-y-px hover:shadow-lg active:scale-95 rounded-lg font-medium transition-all"
+                >
+                  Start Processing
+                </Link>
+                <Link
+                  href="/login"
+                  className="px-6 py-3 border border-border hover:bg-card hover:-translate-y-px hover:shadow-sm active:scale-95 text-foreground rounded-lg font-medium transition-all"
+                >
+                  Sign In
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

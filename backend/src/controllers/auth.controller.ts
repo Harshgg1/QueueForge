@@ -4,22 +4,15 @@ import {
   loginService,
 } from "../services/auth.service";
 
-function getTokenCookieOptions(req: Request): CookieOptions {
-  const forwardedProto = req.headers["x-forwarded-proto"];
-  const isForwardedHttps = Array.isArray(forwardedProto)
-    ? forwardedProto.includes("https")
-    : forwardedProto?.split(",").map((value) => value.trim()).includes("https");
-  const isHttps = req.secure || Boolean(isForwardedHttps);
-  const cookieDomain = process.env.COOKIE_DOMAIN;
+const isProduction = process.env.NODE_ENV === "production";
 
-  return {
-    httpOnly: true,
-    secure: isHttps,
-    sameSite: isHttps ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    ...(cookieDomain ? { domain: cookieDomain } : {}),
-  };
-}
+const cookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax", 
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: "/", // ensures cookie is available on all frontend routes
+};
 
 export async function signup(req: Request, res: Response) {
   try {
@@ -38,7 +31,7 @@ export async function signup(req: Request, res: Response) {
       email,
       password,
     });
-    res.cookie("token", result.token, getTokenCookieOptions(req));
+    res.cookie("token", result.token, cookieOptions);
 
     res.status(201).json({
       success: true,
@@ -72,7 +65,7 @@ export async function login(req: Request, res: Response) {
 
     const token = (result as any).token;
     if (token) {
-      res.cookie("token", token, getTokenCookieOptions(req));
+      res.cookie("token", token, cookieOptions);
     }
 
     res.status(200).json({
@@ -89,7 +82,7 @@ export async function login(req: Request, res: Response) {
 }
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie("token", getTokenCookieOptions(req));
+  res.clearCookie("token", cookieOptions);
 
   res.json({
     message: "Logged out",

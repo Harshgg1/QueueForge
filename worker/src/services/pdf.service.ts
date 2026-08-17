@@ -1,25 +1,23 @@
-import fs from "fs/promises";
-import path from "path";
 import { PDFParse } from "pdf-parse";
+import { downloadFile, getPublicUrl } from "../lib/storage";
 
 export async function processPdf(jobRecord: any) {
-    const basePath = process.env.UPLOADS_BASE_PATH || path.resolve("../backend");
-    const inputPath = path.join(
-        basePath,
-        jobRecord.payload.pdfPath
-    );
+    const pdfPath = jobRecord.payload.pdfPath;
 
-    const buffer = await fs.readFile(inputPath);
+    // Download PDF buffer from Supabase
+    const buffer = await downloadFile(pdfPath);
 
     const parser = new PDFParse({ data: buffer });
-
     const result = await parser.getText();
-
     await parser.destroy();
 
+    const originalUrl = getPublicUrl(pdfPath);
+
     return {
+        originalPath: pdfPath,
+        originalUrl,
         pages: result.total,
         preview: result.text.slice(0, 1000),
         textLength: result.text.length
     };
-}
+}

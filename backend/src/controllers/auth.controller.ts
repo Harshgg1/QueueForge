@@ -1,8 +1,25 @@
-import type{ Request, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 import {
   signupService,
   loginService,
 } from "../services/auth.service";
+
+function getTokenCookieOptions(req: Request): CookieOptions {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const isForwardedHttps = Array.isArray(forwardedProto)
+    ? forwardedProto.includes("https")
+    : forwardedProto?.split(",").map((value) => value.trim()).includes("https");
+  const isHttps = req.secure || Boolean(isForwardedHttps);
+  const cookieDomain = process.env.COOKIE_DOMAIN;
+
+  return {
+    httpOnly: true,
+    secure: isHttps,
+    sameSite: isHttps ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
+  };
+}
 
 export async function signup(req: Request, res: Response) {
   try {
@@ -21,13 +38,7 @@ export async function signup(req: Request, res: Response) {
       email,
       password,
     });
-    res.cookie("token", result.token, {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/",
-});
+    res.cookie("token", result.token, getTokenCookieOptions(req));
 
     res.status(201).json({
       success: true,
@@ -61,13 +72,7 @@ export async function login(req: Request, res: Response) {
 
     const token = (result as any).token;
     if (token) {
-      res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: "/",
-      });
+      res.cookie("token", token, getTokenCookieOptions(req));
     }
 
     res.status(200).json({
@@ -84,12 +89,7 @@ export async function login(req: Request, res: Response) {
 }
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-    path: "/",
-  });
+  res.clearCookie("token", getTokenCookieOptions(req));
 
   res.json({
     message: "Logged out",

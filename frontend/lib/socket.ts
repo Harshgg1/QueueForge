@@ -2,8 +2,8 @@
 
 import { io} from "socket.io-client";
 
-// Remove '/api' from the end if it exists to get the base backend URL
-const backendUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '') || "http://localhost:4000";
+// WebSockets connect directly to the backend (can't be proxied through Next.js rewrites)
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://api.queueforge.harshgg.me";
 
 export const socket = io(backendUrl, {
     withCredentials: true,

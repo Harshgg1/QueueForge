@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLogin } from "@/hooks/useLogin";
+import { useMe } from "@/hooks/useMe";
 import { Workflow, AlertCircle, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
@@ -13,6 +14,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const login = useLogin();
+  const { data: user, isLoading: checkingAuth } = useMe();
+
+  // If already logged in, redirect to dashboard
+  useEffect(() => {
+    if (user?.data) {
+      router.replace("/dashboard");
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +35,18 @@ export default function LoginPage() {
       }
     );
   };
+
+  // Show loading while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (user?.data) return null;
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative bg-background">

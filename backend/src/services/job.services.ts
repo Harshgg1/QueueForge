@@ -1,7 +1,6 @@
 import prisma from "../lib/prisma";
 import { JobType, JobStatus } from "@prisma/client";
 import jobQueue from "../lib/queue";
-import { wakeWorker } from "./wakeWorker.service";
 
 export const createJobService = async({title, jobType, payload, ownerId}: {title: string; jobType: JobType; payload: any; ownerId: string}) => {
     console.log("service called");
@@ -22,7 +21,6 @@ export const createJobService = async({title, jobType, payload, ownerId}: {title
             removeOnComplete: 100,
             removeOnFail: 100,
         });
-    await wakeWorker();
 
     const updatedJob = await prisma.job.update({
         where: { id: result.id },

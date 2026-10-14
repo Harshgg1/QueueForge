@@ -16,18 +16,10 @@ app.get("/", (req, res) => {
     res.send("QueueForge Worker Running");
 });
 
-app.post("/wake", (req, res) => {
-    const secret = req.headers.authorization;
+const PORT = process.env.PORT || 3001;
 
-    if (secret !== `Bearer ${process.env.WORKER_WAKE_SECRET}`) {
-        return res.status(401).json({
-            message: "Unauthorized"
-        });
-    }
-
-    return res.status(200).json({
-        message: "Worker awake"
-    });
+app.listen(PORT,()=>{
+    console.log(`Worker running on ${PORT}`);
 });
 // end // 
 
